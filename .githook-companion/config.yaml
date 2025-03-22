@@ -1,0 +1,130 @@
+parent: null
+commit:
+    types:
+        - type: feat
+          description: a new feature is introduced with the changes
+        - type: ignore
+          description: commit can be ignored by other tools
+        - type: fix
+          description: a bug fix has occurred
+        - type: docs
+          description: updates to documentation such as a the README or other markdown files
+        - type: test
+          description: including new or correcting previous tests
+        - type: refactor
+          description: refactored code that neither fixes a bug nor adds a feature
+        - type: breaking
+          description: introducing a breaking change in input or output behaviour
+    no_formatting:
+        - ignore
+    defaut_type: feat
+    message_template: '{{ .CommitType | upper }}: {{ if .IssueTrackerReference }}({{ .IssueTrackerReference }}){{ end }} {{ .Message | lower }}'
+    tokenizer_options:
+        language_detection_options:
+            default_language_code: en
+            default_language_Name: english
+            confidence_thresthold: 0.7
+            minimum_word_count: 5
+        language_codes:
+            - en
+        dictionaries:
+            - name: weak-feature-signals
+              description: a collection of words that can imply a new feature
+              language_code: en
+              token_name: commit_type
+              token_value: feat
+              token_value_is_match: false
+              synonyms:
+                - add
+                - implement
+                - use
+                - new
+              confidence_thresthold: 0
+            - name: ignore-signals
+              description: ""
+              language_code: en
+              token_name: commit_type
+              token_value: ignore
+              token_value_is_match: false
+              synonyms:
+                - typo
+                - wip
+              confidence_thresthold: 0
+            - name: refactor-signals
+              description: ""
+              language_code: en
+              token_name: commit_type
+              token_value: refactor
+              token_value_is_match: false
+              synonyms:
+                - remove
+                - change
+                - update
+                - upgrate
+                - restructure
+              confidence_thresthold: 0
+            - name: fix-signals
+              description: ""
+              language_code: en
+              token_name: commit_type
+              token_value: fix
+              token_value_is_match: false
+              synonyms:
+                - fix
+                - bugfix
+                - bug
+              confidence_thresthold: 0
+        lexemes:
+            - name: commit_type
+              description: commit type lexeme to be retrieved from well formatted messages
+              language_code: '*'
+              token: commit_type
+              variants:
+                - name: ""
+                  description: ""
+                  matcher: ^(?i)(feat|ignore|fix|docs|test|refactor|breaking)\b\s*:{0,1}
+                  normalisers:
+                    - name: ""
+                      description: ""
+                      matcher: ^(?i)(feat|ignore|fix|docs|test|refactor|breaking)
+                      replace_all: true
+                      replacement: ""
+                      formatter: '{{ upper . }}'
+              normalisers: []
+            - name: issue_tracker_reference
+              description: lexeme to identify issue tracker references from different providers
+              language_code: '*'
+              token: issue_tracker_reference
+              variants:
+                - name: JIRA like issue reference
+                  description: ""
+                  matcher: '[\(\[]{0,1}([\w]{0,6})[-_]([\d]+)[\)\]]{0,1}'
+                  normalisers:
+                    - name: ""
+                      description: ""
+                      matcher: ([\w]{0,6})[-_]([\d]+)
+                      replace_all: true
+                      replacement: ""
+                      formatter: '{{ upper . }}'
+                    - name: ""
+                      description: ""
+                      matcher: '[-_]'
+                      replace_all: false
+                      replacement: '-'
+                      formatter: null
+                - name: GitHub issue reference
+                  description: ""
+                  matcher: '[\(\[]{0,1}(#|gh-|GH-)([\d]+)[\)\]]{0,1}'
+                  normalisers:
+                    - name: github issue reference
+                      description: ""
+                      matcher: (#)
+                      replace_all: false
+                      replacement: gh-
+                      formatter: null
+              normalisers: []
+        normalisers: []
+        confidence_thresthold: 0
+dependencies: []
+dependency_directory: ""
+githook_directory: ""
