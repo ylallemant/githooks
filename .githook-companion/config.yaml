@@ -1,4 +1,3 @@
-parent: null
 commit:
     types:
         - type: feat
@@ -17,7 +16,7 @@ commit:
           description: introducing a breaking change in input or output behaviour
     no_formatting:
         - ignore
-    defaut_type: feat
+    default_type: feat
     message_template: '{{ .CommitType | upper }}: {{ if .IssueTrackerReference }}({{ .IssueTrackerReference }}){{ end }} {{ .Message | lower }}'
     tokenizer_options:
         language_detection_options:
@@ -39,6 +38,7 @@ commit:
                 - implement
                 - use
                 - new
+              weight: 1
               confidence_thresthold: 0
             - name: ignore-signals
               description: ""
@@ -49,6 +49,7 @@ commit:
               synonyms:
                 - typo
                 - wip
+              weight: 2
               confidence_thresthold: 0
             - name: refactor-signals
               description: ""
@@ -62,6 +63,7 @@ commit:
                 - update
                 - upgrate
                 - restructure
+              weight: 2
               confidence_thresthold: 0
             - name: fix-signals
               description: ""
@@ -73,10 +75,43 @@ commit:
                 - fix
                 - bugfix
                 - bug
+              weight: 2
+              confidence_thresthold: 0
+            - name: docs-signals
+              description: ""
+              language_code: en
+              token_name: commit_type
+              token_value: docs
+              token_value_is_match: false
+              synonyms:
+                - document
+                - doc
+              weight: 2
+              confidence_thresthold: 0
+            - name: test-signals
+              description: ""
+              language_code: en
+              token_name: commit_type
+              token_value: test
+              token_value_is_match: false
+              synonyms:
+                - test
+              weight: 2
+              confidence_thresthold: 0
+            - name: breaking-signals
+              description: ""
+              language_code: en
+              token_name: commit_type
+              token_value: breaking
+              token_value_is_match: false
+              synonyms:
+                - break
+                - major
+              weight: 4
               confidence_thresthold: 0
         lexemes:
             - name: commit_type
-              description: commit type lexeme to be retrieved from well formatted messages
+              description: auto-generated commit type lexeme to be retrieved from well formatted messages
               language_code: '*'
               token: commit_type
               variants:
@@ -89,7 +124,8 @@ commit:
                       matcher: ^(?i)(feat|ignore|fix|docs|test|refactor|breaking)
                       replace_all: true
                       replacement: ""
-                      formatter: '{{ upper . }}'
+                      formatter:
+                        template: '{{ upper . }}'
               normalisers: []
             - name: issue_tracker_reference
               description: lexeme to identify issue tracker references from different providers
@@ -105,13 +141,13 @@ commit:
                       matcher: ([\w]{0,6})[-_]([\d]+)
                       replace_all: true
                       replacement: ""
-                      formatter: '{{ upper . }}'
+                      formatter:
+                        template: '{{ upper . }}'
                     - name: ""
                       description: ""
                       matcher: '[-_]'
                       replace_all: false
                       replacement: '-'
-                      formatter: null
                 - name: GitHub issue reference
                   description: ""
                   matcher: '[\(\[]{0,1}(#|gh-|GH-)([\d]+)[\)\]]{0,1}'
@@ -121,7 +157,6 @@ commit:
                       matcher: (#)
                       replace_all: false
                       replacement: gh-
-                      formatter: null
               normalisers: []
         normalisers: []
         confidence_thresthold: 0

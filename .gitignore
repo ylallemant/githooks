@@ -28,5 +28,6 @@ dist/
 
 
 # githook-companion rules
+.githook-companion/logs
 .githook-companion/bin
-.githook-companion/locks
+.githook-companion/context
