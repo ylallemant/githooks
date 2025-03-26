@@ -22,7 +22,7 @@ commit:
         language_detection_options:
             default_language_code: en
             default_language_Name: english
-            confidence_thresthold: 0.7
+            confidence_thresthold: 0.20
             minimum_word_count: 5
         language_codes:
             - en
