@@ -2,27 +2,35 @@ commit:
     types:
         - type: feat
           description: a new feature is introduced with the changes
+        - type: refactor
+          description: refactored code that neither fixes a bug nor adds a feature
         - type: ignore
           description: commit can be ignored by other tools
         - type: fix
-          description: a bug fix has occurred
+          description: a bug fix has been implemented
         - type: docs
-          description: updates to documentation such as a the README or other markdown files
+          description: documentation only changes
         - type: test
           description: including new or correcting previous tests
-        - type: refactor
-          description: refactored code that neither fixes a bug nor adds a feature
-        - type: breaking
-          description: introducing a breaking change in input or output behaviour
+        - type: perf
+          description: a code change that improves performance
+        - type: style
+          description: changes that do not affect the meaning of the code (white-space, formatting, ...)
+        - type: chore
+          description: other changes that don't modify src or test files
+        - type: build
+          description: changes that affect the build system or external dependencies
+        - type: ci
+          description: changes to CI configuration files and scripts
     no_formatting:
         - ignore
     default_type: feat
-    message_template: '{{ .CommitType | upper }}: {{ if .IssueTrackerReference }}({{ .IssueTrackerReference }}){{ end }} {{ .Message | lower }}'
+    message_template: '{{ .CommitType | upper }}{{ if .CommitScope }}({{ .CommitScope | lower }}){{ end }}{{ if .CommitBreakingFlag }}{{ .CommitBreakingFlag }}{{ end }}: {{ if .IssueTrackerReference }}[{{ .IssueTrackerReference }}]{{ end }} {{ .Message | lower }}'
     tokenizer_options:
         language_detection_options:
             default_language_code: en
             default_language_Name: english
-            confidence_thresthold: 0.20
+            confidence_thresthold: 0.2
             minimum_word_count: 5
         language_codes:
             - en
@@ -98,17 +106,6 @@ commit:
                 - test
               weight: 2
               confidence_thresthold: 0
-            - name: breaking-signals
-              description: ""
-              language_code: en
-              token_name: commit_type
-              token_value: breaking
-              token_value_is_match: false
-              synonyms:
-                - break
-                - major
-              weight: 4
-              confidence_thresthold: 0
         lexemes:
             - name: commit_type
               description: auto-generated commit type lexeme to be retrieved from well formatted messages
@@ -117,15 +114,55 @@ commit:
               variants:
                 - name: ""
                   description: ""
-                  matcher: ^(?i)(feat|ignore|fix|docs|test|refactor|breaking)\b\s*:{0,1}
+                  matcher: ^(?i)(feat|refactor|ignore|fix|docs|test|perf|style|chore|build|ci)\b(\s*\(\w+\)){0,1}\s*!{0,1}\s*:{0,1}
+                  normalisers: []
+              splitters:
+                - name: commit_type
+                  description: commit type lexeme
+                  token: commit_type
+                  variants:
+                    - name: ""
+                      description: ""
+                      matcher: ^(?i)(feat|refactor|ignore|fix|docs|test|perf|style|chore|build|ci)
+                      normalisers: []
                   normalisers:
                     - name: ""
                       description: ""
-                      matcher: ^(?i)(feat|ignore|fix|docs|test|refactor|breaking)
+                      matcher: ^(?i)(feat|refactor|ignore|fix|docs|test|perf|style|chore|build|ci)
                       replace_all: true
                       replacement: ""
                       formatter:
                         template: '{{ upper . }}'
+                - name: commit_scope
+                  description: commit scope lexeme
+                  token: commit_scope
+                  variants:
+                    - name: ""
+                      description: ""
+                      matcher: \((\w+)\)
+                      normalisers: []
+                  normalisers:
+                    - name: ""
+                      description: ""
+                      matcher: (\w+)
+                      replace_all: true
+                      replacement: ""
+                      formatter:
+                        template: '{{ lower . }}'
+                - name: commit_breaking_flag
+                  description: commit scope lexeme
+                  token: commit_breaking_flag
+                  variants:
+                    - name: ""
+                      description: ""
+                      matcher: (!{0,1})
+                      normalisers: []
+                  normalisers:
+                    - name: ""
+                      description: ""
+                      matcher: (!)
+                      replace_all: true
+                      replacement: ""
               normalisers: []
             - name: issue_tracker_reference
               description: lexeme to identify issue tracker references from different providers
@@ -157,6 +194,7 @@ commit:
                       matcher: (#)
                       replace_all: false
                       replacement: gh-
+              splitters: []
               normalisers: []
         normalisers: []
         confidence_thresthold: 0
