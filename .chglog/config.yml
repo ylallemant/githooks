@@ -1,0 +1,46 @@
+style: none
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+options:
+  commits:
+    filters:
+      Type:
+        - FEAT
+        - FIX
+        - DOCS
+        - TEST
+        - REFACTOR
+        - PERF
+        - STYLE
+        - CHORE
+        - BUILD
+        - CI
+  commit_groups:
+    title_maps:
+      FEAT: Features
+      FIX: Bug Fixes
+      PERF: Performance Improvements
+      REFACTOR: Code Refactoring
+      TEST: Test Coverage
+      DOCS: Documentation
+  header:
+    pattern: "^(\\w+):\\s(.*)$"
+    pattern_maps:
+      - Type
+      - Subject
+  
+  merges:
+    pattern: "^Merged PR (\\d+): (.+)$"
+    pattern_maps:
+      - Ref
+      - Source
+
+  reverts:
+    pattern: "^Revert \"([\\s\\S]*)\"$"
+    pattern_maps:
+      - Header
+
+  notes:
+    keywords:
+      - BREAKING CHANGE

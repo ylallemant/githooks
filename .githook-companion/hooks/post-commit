@@ -14,27 +14,23 @@ CHILD_BIN_DIRECTORY="$(githook-companion config dependency path --child)"
 # project custom githook directory
 CHILD_GITHOOKS_DIRECTORY="$(githook-companion config hook path --child)"
 
-echo "apply generic pre-commit"
 
-# make sure all old locks are removed
-githook-companion git hook unlock --all
+IS_LOCKED=$(githook-companion git hook locked post-commit)
 
-# Make sure my email is set properly
-if [ -z "$(git config user.email)" ]
+if [ "$IS_LOCKED" != "true" ]
 then
-	cat "\nError: user.email not set\n\n"
-	exit 1
-fi
 
-# Make sure my name is set properly
-if [ -z "$(git config user.name)" ]
-then
-	cat "\nError: user.name not set\n\n"
-	exit 1
-fi
+  echo "apply generic post-commit"
+  githook-companion git hook lock post-commit --duration 5m
 
-if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/pre-commit" ] && [ "$PARENT_CONFIG_REPOSITORY" != "$CHILD_CONFIG_REPOSITORY" ]
-then
-  echo "apply child pre-commit"
-  "$CHILD_GITHOOKS_DIRECTORY"/pre-commit
+  if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/post-commit" ] && [ "$PARENT_CONFIG_REPOSITORY" != "$CHILD_CONFIG_REPOSITORY" ]
+  then
+    echo "apply child post-commit"
+    "$CHILD_GITHOOKS_DIRECTORY"/post-commit
+  fi
+
+  # remove lock
+  githook-companion git hook unlock post-commit
+else
+  echo "generic post-commit is locked"
 fi

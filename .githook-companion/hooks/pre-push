@@ -1,0 +1,61 @@
+#!/usr/bin/sh
+#; C:/Program\ Files/Git/usr/bin/sh.exe
+set -eu
+
+# root path of the repositories holding configuration
+# if there is no parent config,
+# both variables have the same value
+PARENT_CONFIG_REPOSITORY="$(dirname $(githook-companion config directory))"
+CHILD_CONFIG_REPOSITORY="$(pwd)"
+# binary dependecy directories.
+# if there is no parent config,
+# both variables have the same value
+PARENT_BIN_DIRECTORY="$(githook-companion config dependency path)"
+CHILD_BIN_DIRECTORY="$(githook-companion config dependency path --child)"
+# project custom githook directory
+CHILD_GITHOOKS_DIRECTORY="$(githook-companion config hook path --child)"
+
+
+# apply custom git-hooks
+if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/pre-push" ] && [ "$PARENT_CONFIG_REPOSITORY" != "$CHILD_CONFIG_REPOSITORY" ]
+then
+  echo "apply child pre-push"
+  "$CHILD_GITHOOKS_DIRECTORY"/pre-push
+fi
+
+echo "apply generic pre-push"
+
+# generating changelog
+TEMPLATE_NAME=$(githook-companion git server name --default default)
+REPOSITORY_URL=$(githook-companion git server repository)
+
+# make sure a clean state is being pushed
+if [ -z "$(git status --porcelain)" ]; then
+  # Working directory clean
+  echo "clean state: proceed with push"
+else
+  # Uncommitted changes
+  echo "you have uncommited changes: stopping the push"
+  git diff
+  exit 1
+fi
+
+echo "generating CHANGELOG.md for $REPOSITORY_URL with template $PARENT_CONFIG_REPOSITORY/.chglog/templates/$TEMPLATE_NAME.tpl.md"
+git fetch --prune --prune-tags --tags -f origin
+"$PARENT_BIN_DIRECTORY"/git-chglog \
+    --next-tag 'Unreleased' \
+    --repository-url "$REPOSITORY_URL" \
+    -o "$CHILD_CONFIG_REPOSITORY/CHANGELOG.md" \
+    -c "$PARENT_CONFIG_REPOSITORY/.chglog/config.yml" \
+    -t "$PARENT_CONFIG_REPOSITORY/.chglog/templates/$TEMPLATE_NAME.tpl.md" 
+
+if [ -n "$(git diff CHANGELOG.md)" ]
+then
+  echo "commit changes to the changelog file"
+  githook-companion git hook lock post-commit --duration 5m
+
+  git add "CHANGELOG.md"
+  git commit -m "IGNORE: update at $(date +"%Y-%m-%dT%H:%M")" --no-verify --quiet --no-post-rewrite
+  
+  githook-companion git hook unlock post-commit
+fi
