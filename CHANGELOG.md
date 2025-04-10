@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 
+* renamed old variable
 * set path to interpreter to be valid for linux and darwin
 
 ### Code Refactoring
