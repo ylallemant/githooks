@@ -22,7 +22,7 @@ echo "apply parent pre-push"
 if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/pre-push" ] && [ "$PARENT_REPOSITORY_ROOT" != "$CHILD_REPOSITORY_ROOT" ]
 then
   echo "apply child pre-push"
-  "$CUSTOM_GITHOOKS_DIRECTORY"/pre-push
+  "$CHILD_GITHOOKS_DIRECTORY"/pre-push
 fi
 
 
