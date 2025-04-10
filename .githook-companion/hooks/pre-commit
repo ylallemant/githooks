@@ -1,22 +1,23 @@
-#!/usr/bin/sh
+#!/bin/sh
 set -eu
 
 # root path of the repositories holding configuration
 # if there is no parent config,
 # both variables have the same value
-PARENT_CONFIG_REPOSITORY="$(dirname $(githook-companion config directory))"
-CHILD_CONFIG_REPOSITORY="$(pwd)"
-# binary dependecy directories.
+PARENT_REPOSITORY_ROOT="$(dirname $(githook-companion config directory))"
+CHILD_REPOSITORY_ROOT="$(pwd)"
+# binary dependecy directories
 # if there is no parent config,
 # both variables have the same value
 PARENT_BIN_DIRECTORY="$(githook-companion config dependency path)"
 CHILD_BIN_DIRECTORY="$(githook-companion config dependency path --child)"
-# project custom githook directory
+# githooks directory
 CHILD_GITHOOKS_DIRECTORY="$(githook-companion config hook path --child)"
+CHILD_CONFIG_DIRECTORY="$(githook-companion config directory --child)"
 
-echo "apply generic pre-commit"
+echo "apply parent pre-commit"
 
-# make sure all old locks are removed
+# unlock all githooks from last cycle
 githook-companion git hook unlock --all
 
 # Make sure my email is set properly
@@ -33,7 +34,8 @@ then
 	exit 1
 fi
 
-if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/pre-commit" ] && [ "$PARENT_CONFIG_REPOSITORY" != "$CHILD_CONFIG_REPOSITORY" ]
+
+if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/pre-commit" ] && [ "$PARENT_REPOSITORY_ROOT" != "$CHILD_REPOSITORY_ROOT" ]
 then
   echo "apply child pre-commit"
   "$CHILD_GITHOOKS_DIRECTORY"/pre-commit
