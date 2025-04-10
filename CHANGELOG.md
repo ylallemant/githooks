@@ -6,6 +6,10 @@
 
 * set path to interpreter to be valid for linux and darwin
 
+### Code Refactoring
+
+* add consistency to the variables
+
 ### Documentation
 
 * add README information
