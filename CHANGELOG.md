@@ -1,6 +1,6 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-04-10)
+## Unreleased (2025-04-14)
 
 ### Bug Fixes
 
@@ -9,6 +9,7 @@
 
 ### Code Refactoring
 
+* git status check as last action
 * add consistency to the variables
 
 ### Documentation
