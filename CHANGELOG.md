@@ -1,9 +1,10 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-04-14)
+## Unreleased (2025-04-15)
 
 ### Bug Fixes
 
+* issue-tracker-reference regex
 * renamed old variable
 * set path to interpreter to be valid for linux and darwin
 
