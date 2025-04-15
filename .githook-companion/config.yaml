@@ -183,11 +183,11 @@ commit:
               variants:
                 - name: JIRA like issue reference
                   description: ""
-                  matcher: '[\(\[]{0,1}([\w]{0,6})[-_]([\d]+)[\)\]]{0,1}'
+                  matcher: '[\(\[]([a-zA-Z][\w]{1,6})[-_]([\d]+)[\)\]]{0,1}'
                   normalisers:
                     - name: ""
                       description: ""
-                      matcher: ([\w]{0,6})[-_]([\d]+)
+                      matcher: ([a-zA-Z][\w]{1,6})[-_]([\d]+)
                       replace_all: true
                       replacement: ""
                       formatter:
