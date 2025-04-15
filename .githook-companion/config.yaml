@@ -176,6 +176,24 @@ commit:
                       replace_all: true
                       replacement: ""
               normalisers: []
+            - name: iso8601-date
+              description: lexeme to identify a date formatted after ISO-8601
+              language_code: '*'
+              token: iso8601_date
+              variants:
+                - name: iso8601-date
+                  description: ""
+                  matcher: \d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?
+                  normalisers:
+                    - name: ISO-8601 date
+                      description: ""
+                      matcher: (.+)
+                      replace_all: true
+                      replacement: ""
+                      formatter:
+                        template: '{{ upper . }}'
+              splitters: []
+              normalisers: []
             - name: issue_tracker_reference
               description: lexeme to identify issue tracker references from different providers
               language_code: '*'
