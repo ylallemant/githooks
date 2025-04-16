@@ -11,6 +11,7 @@
 
 ### Code Refactoring
 
+* check for new changelog with git ls-files
 * removed unnecessary information from the log
 * git status check as last action
 * add consistency to the variables
