@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 
+* changelog commit on the first time
 * issue-tracker-reference regex
 * renamed old variable
 * set path to interpreter to be valid for linux and darwin
