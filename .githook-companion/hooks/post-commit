@@ -17,8 +17,6 @@ CHILD_GITHOOKS_DIRECTORY="$(githook-companion config hook path --child)"
 
 if [ "$(githook-companion git hook locked post-commit)" != "true" ]
 then
-
-  echo "apply parent post-commit"
   githook-companion git hook lock post-commit --duration 5m
 
   if [ -d "$CHILD_GITHOOKS_DIRECTORY" ] && [ -f "$CHILD_GITHOOKS_DIRECTORY/post-commit" ] && [ "$PARENT_REPOSITORY_ROOT" != "$CHILD_REPOSITORY_ROOT" ]
@@ -27,8 +25,40 @@ then
     "$CHILD_GITHOOKS_DIRECTORY"/post-commit
   fi
 
+  echo "apply generic post-commit"
+
+  # generating changelog
+
+  # variable needed because "git diff" show no diff on new files
+  # so for the fisrt time we generate the CHANGELOG we need to know if it existed
+  CHANGELOG_EXISTS="no"
+  if [ -f "CHANGELOG.md" ]; then
+    CHANGELOG_EXISTS="yes"
+  fi
+  
+  TEMPLATE_NAME=$(githook-companion git server name --default default)
+  REPOSITORY_URL=$(githook-companion git server repository)
+
+  echo "generating CHANGELOG.md for $REPOSITORY_URL with template $PARENT_REPOSITORY_ROOT/.chglog/templates/$TEMPLATE_NAME.tpl.md"
+  git fetch --prune --prune-tags --tags -f origin
+  "$PARENT_BIN_DIRECTORY"/git-chglog \
+      --next-tag 'Unreleased' \
+      --repository-url "$REPOSITORY_URL" \
+      -o "$CHILD_REPOSITORY_ROOT/CHANGELOG.md" \
+      -c "$PARENT_REPOSITORY_ROOT/.chglog/config.yml" \
+      -t "$PARENT_REPOSITORY_ROOT/.chglog/templates/$TEMPLATE_NAME.tpl.md" 
+
+
+  if [ -n "$(git diff CHANGELOG.md)" ] || [ $CHANGELOG_EXISTS = "no" ]; then
+    echo "commit changes to the changelog file"
+
+    git add "CHANGELOG.md"
+    git commit -m "IGNORE: CHANGELOG update at $(date +"%Y-%m-%dT%H:%M")" --no-verify --quiet --no-post-rewrite
+  fi
+
+
   # remove lock
   githook-companion git hook unlock post-commit
 else
-  echo "parent post-commit is locked"
+  echo "generic post-commit is locked"
 fi
