@@ -35,15 +35,6 @@ echo "-------------------------" >>  "$CHILD_LOG_FILE"
 githook-companion debug >>  "$CHILD_LOG_FILE"
 echo "-------------------------" >>  "$CHILD_LOG_FILE"
 env >>  "$CHILD_LOG_FILE"
-echo "-------------------------" >>  "$CHILD_LOG_FILE"
-ls -al /dev/tty*  >>  "$CHILD_LOG_FILE"
-echo "-------------------------" >>  "$CHILD_LOG_FILE"
-
-if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
-    echo "/dev/tty is available and usable" >>  "$CHILD_LOG_FILE"
-else
-    echo "/dev/tty is not available" >>  "$CHILD_LOG_FILE"
-fi
 
 githook-companion version --semver
 githook-companion git commit validate -m "$(cat $COMMIT_MESSAGE_FILE)" -o "$COMMIT_MESSAGE_FILE" < /dev/tty
