@@ -1,6 +1,6 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-04-15)
+## Unreleased (2025-04-16)
 
 ### Bug Fixes
 
@@ -10,6 +10,7 @@
 
 ### Code Refactoring
 
+* removed unnecessary information from the log
 * git status check as last action
 * add consistency to the variables
 
@@ -19,6 +20,7 @@
 
 ### Features
 
+* add iso-8601 date lexeme
 * add changelog.md generation
 * add sync configuration
 * support verion 0.8.8
