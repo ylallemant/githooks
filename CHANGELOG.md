@@ -1,9 +1,10 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-04-16)
+## Unreleased (2025-04-17)
 
 ### Bug Fixes
 
+* validate message command call based on environment
 * changelog commit on the first time
 * issue-tracker-reference regex
 * renamed old variable
