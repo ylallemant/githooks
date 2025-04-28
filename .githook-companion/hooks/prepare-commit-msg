@@ -38,7 +38,7 @@ env >>  "$CHILD_LOG_FILE"
 
 githook-companion version --semver
 
-if [ "true" = "$(githook-companion environment terminal)"]
+if [ "true" = "$(githook-companion environment terminal)" ]
 then
   githook-companion git commit validate -m "$(cat $COMMIT_MESSAGE_FILE)" -o "$COMMIT_MESSAGE_FILE" < /dev/tty
 else
