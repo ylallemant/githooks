@@ -1,9 +1,10 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-04-17)
+## Unreleased (2025-04-28)
 
 ### Bug Fixes
 
+* add missing space in script condition
 * validate message command call based on environment
 * changelog commit on the first time
 * issue-tracker-reference regex
