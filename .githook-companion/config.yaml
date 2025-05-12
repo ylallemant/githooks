@@ -1,3 +1,6 @@
+kind: GithookCompanionConfiguration
+version: 0.8.16
+
 dependencies:
   - name: git-chglog
     version: 0.15.4
@@ -5,7 +8,8 @@ dependencies:
     archive_url_template: https://github.com/git-chglog/git-chglog/releases/download/v{{.Version}}/git-chglog_{{.Version}}_{{.Os}}_{{.Arch}}.{{.Ext}}
 
 sync:
-    enabled: true
+    parent: true
+    binary: true
     timeout: 5s
     checkperiod: 3m0s
     offlinelockduration: 20m0s
