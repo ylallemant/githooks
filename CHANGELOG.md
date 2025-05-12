@@ -1,6 +1,6 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-04-28)
+## Unreleased (2025-05-12)
 
 ### Bug Fixes
 
@@ -13,6 +13,7 @@
 
 ### Code Refactoring
 
+* make compatible to 0.8.16
 * check for new changelog with git ls-files
 * removed unnecessary information from the log
 * git status check as last action
