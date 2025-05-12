@@ -9,7 +9,7 @@ dependencies:
 
 sync:
     parent: true
-    binary: true
+    binary: false
     timeout: 5s
     checkperiod: 3m0s
     offlinelockduration: 20m0s
