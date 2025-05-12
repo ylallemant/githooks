@@ -25,6 +25,7 @@
 
 ### Features
 
+* add active status check for all githooks
 * add iso-8601 date lexeme
 * add changelog.md generation
 * add sync configuration
