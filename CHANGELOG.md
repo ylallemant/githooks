@@ -1,9 +1,10 @@
 
 <a name="Unreleased"></a>
-## Unreleased (2025-05-12)
+## Unreleased (2025-05-13)
 
 ### Bug Fixes
 
+* use POSIX compliant string comparaison
 * add missing space in script condition
 * validate message command call based on environment
 * changelog commit on the first time
