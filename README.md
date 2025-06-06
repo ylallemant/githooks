@@ -15,7 +15,7 @@ Install [githook-companion](https://github.com/ylallemant/githook-companion?tab=
 In your project root directory, simply run following command :
 
 ```bash
-githook-companion -m --parent-path ../githooks --parent-repository https://github.com/ylallemant/githooks
+githook-companion init -m --parent-path ../githooks --parent-repository https://github.com/ylallemant/githooks
 ```
 
 > [!NOTE]
